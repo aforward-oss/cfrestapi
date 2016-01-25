@@ -15,9 +15,7 @@ search: true
 
 # Introduction
 
-Welcome to the CrossFit API!
-
-We have language bindings in Shell, PHP.
+Welcome to the CrossFit API! We have language bindings in Shell, PHP.
 
 ## Parameters
 
