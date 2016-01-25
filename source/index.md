@@ -1,10 +1,7 @@
 ---
-title: API Reference
+title: CrossFIT REST APIs
 
 language_tabs:
-  - shell
-  - ruby
-  - python
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
@@ -18,151 +15,66 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the CrossFit API!
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+We have language bindings in Shell, PHP.
 
-This example API documentation page was created with [Slate](http://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+## Parameters
 
-# Authentication
+Many API methods take optional parameters. For GET requests, any parameters not specified as a segment in the
+path can be passed as an HTTP query string parameter:
 
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
+```
+curl -i "https://api.crossfit.com/recur/api/v1/accounts/123?filter=CF&limit=10"
 ```
 
-```python
-import kittn
+In this example, the `'123'` value is provided for `:accountid` parameter in the path while `:limit` and `:filter` are passed in the query string.
 
-api = kittn.authorize('meowmeowmeow')
-```
+For POST, PATCH, PUT, and DELETE requests, parameters not included in the URL should be encoded as JSON with a Content-Type of 'application/json':
 
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
+curl -i -u username -d '{"scopes":["public_profile"]}' https://api.crossfit.com/authorizations
 
-> Make sure to replace `meowmeowmeow` with your API key.
+## HTTP Redirects
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+API uses HTTP redirection where appropriate. Clients should assume that any request may result in a redirection.
+Receiving an HTTP redirection is not an error and clients should follow that redirect.
+Redirect responses will have a Location header field which contains the URI of the resource
+to which the client should repeat the requests.
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+| Status Code | Name | Description |
+| --- | --- | --- |
+| 301 | Permanent redirection. | The URI you used to make the request has been superseded by the one specified in the Location header field. This and all future requests to this resource should be directed to the new URI. |
+| 302, 307 | Temporary redirection. | The request should be repeated verbatim to the URI specified in the Location header field but clients should continue to use the original URI for future requests. |
 
-`Authorization: meowmeowmeow`
+## HTTP Verbs
 
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
+Where possible, API strives to use appropriate HTTP verbs for each action.
 
-# Kittens
+| Verb | Description |
+| --- | --- |
+| GET | Retrieve a resource.
+| POST | Create a resource. |
+| PUT | Edit a resource |
+| DELETE | Delete a resource |
 
-## Get All Kittens
+## Rate Limiting
 
-```ruby
-require 'kittn'
+TBD
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
 
-```python
-import kittn
+## Authentication
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
+TBD
 
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
+## Hypermedia
 
-> The above command returns JSON structured like this:
+Requests that return multiple items will be paginated to 30 items by default. You can specify further pages with the `?page` parameter. For some resources, you can also set a custom page size with the `?per_page` parameter.
 
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
+# Available APIs
 
-This endpoint retrieves all kittens.
+## Comments
 
-### HTTP Request
+## Invoices
 
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
-}
-```
-
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">If you're not using an administrator API key, note that some kittens will return 403 Forbidden if they are hidden for admins only.</aside>
-
-### HTTP Request
-
-`GET http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
+## Recur
 
